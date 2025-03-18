@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Map View Header -->
+<div class="welcome-section mb-4">
+    <h2>Tower Location Map</h2>
+    <p class="text-muted">Interactive visualization of cell tower locations and movement patterns</p>
+</div>
+
+<div class="row">
+    <!-- Map Controls -->
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Map Controls</h5>
+                <div class="mb-3">
+                    <label class="form-label">Time Range</label>
+                    <select class="form-select" id="timeRange">
+                        <option value="24h">Last 24 Hours</option>
+                        <option value="7d">Last 7 Days</option>
+                        <option value="30d">Last 30 Days</option>
+                        <option value="all">All Time</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">View Mode</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="viewMode" id="heatmap" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="heatmap">Heatmap</label>
+                        <input type="radio" class="btn-check" name="viewMode" id="markers" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="markers">Markers</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Filter by Mobile Number</label>
+                    <input type="text" class="form-control" id="mobileFilter" placeholder="Enter mobile number">
+                </div>
+                <button class="btn btn-primary w-100" onclick="applyMapFilters()">
+                    Apply Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Location List -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tower Locations</h5>
+                <div class="tower-list" style="max-height: 400px; overflow-y: auto;">
+                    {% for record in tower_records %}
+                    <div class="tower-item p-2 border-bottom" onclick="focusLocation({{ record.latitude }}, {{ record.longitude }})">
+                        <strong>Tower ID: {{ record.tower_id }}</strong>
+                        <div class="text-muted small">
+                            Lat: {{ record.latitude }}, Long: {{ record.longitude }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Map -->
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-body p-0">
+                <div id="map" style="height: 800px; border-radius: 8px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

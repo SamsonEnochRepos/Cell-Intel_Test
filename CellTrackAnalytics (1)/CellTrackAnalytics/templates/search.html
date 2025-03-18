@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Search Header -->
+<div class="welcome-section mb-4">
+    <h2>Advanced Search</h2>
+    <p class="text-muted">Comprehensive search tools for cell tower data analysis</p>
+</div>
+
+<div class="row">
+    <!-- Basic Search Section -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Basic Search</h5>
+                <form id="basicSearchForm">
+                    <div class="mb-3">
+                        <label class="form-label">Search Type</label>
+                        <select class="form-select" id="searchType">
+                            <option value="mobile">Mobile Number</option>
+                            <option value="imei">IMEI Number</option>
+                            <option value="tower">Tower ID</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Search Value</label>
+                        <input type="text" class="form-control" id="searchValue" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date Range</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type="datetime-local" class="form-control" id="startDate">
+                            </div>
+                            <div class="col">
+                                <input type="datetime-local" class="form-control" id="endDate">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Search Section -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Advanced Search</h5>
+                <form id="advancedSearchForm">
+                    <div class="mb-3">
+                        <label class="form-label">Search Type</label>
+                        <select class="form-select" id="advancedSearchType">
+                            <option value="common_locations">Common Numbers in Multiple Locations</option>
+                            <option value="frequent_callers">Frequent Callers to Target</option>
+                            <option value="geo_fence">Geo-Fencing Search</option>
+                            <option value="foreign_calls">Foreign Number Activity</option>
+                            <option value="high_volume">High Call Volume Numbers</option>
+                            <option value="call_duration">Search by Call Duration</option>
+                        </select>
+                    </div>
+                    <div id="searchParameters" class="mb-3">
+                        <!-- Dynamic fields based on search type -->
+                    </div>
+                    <button type="submit" class="btn btn-primary">Analyze</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- OSINT & Network Analysis -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">OSINT & Network Analysis</h5>
+                <form id="osintSearchForm">
+                    <div class="mb-3">
+                        <label class="form-label">Analysis Type</label>
+                        <select class="form-select" id="osintType">
+                            <option value="reverse_lookup">Reverse Phone Lookup</option>
+                            <option value="ip_tracking">IP & Device Tracking</option>
+                            <option value="social_network">Social Network Mapping</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Target Number/Device</label>
+                        <input type="text" class="form-control" id="osintTarget" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Analyze</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Search Results</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="searchResultsTable">
+                        <thead>
+                            <tr>
+                                <th>Mobile Number</th>
+                                <th>IMEI</th>
+                                <th>Tower ID</th>
+                                <th>Timestamp</th>
+                                <th>Duration</th>
+                                <th>Type</th>
+                                <th>Connected Number</th>
+                                <th>Location</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Map Modal for Geo-Fencing -->
+<div class="modal fade" id="geoFenceModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Define Geo-Fence Area</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="geoFenceMap" style="height: 400px;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="applyGeoFence">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

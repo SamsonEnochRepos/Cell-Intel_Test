@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Analysis Header -->
+<div class="welcome-section mb-4">
+    <h2>Data Analysis</h2>
+    <p class="text-muted">Comprehensive analysis of cell tower movement patterns</p>
+</div>
+
+<div class="row">
+    <!-- Analysis Overview -->
+    <div class="col-md-8 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title">Movement Patterns</h5>
+                    <div class="chart-controls">
+                        <button class="btn btn-sm btn-outline-secondary">Day</button>
+                        <button class="btn btn-sm btn-outline-secondary active">Week</button>
+                        <button class="btn btn-sm btn-outline-secondary">Month</button>
+                    </div>
+                </div>
+                <canvas id="patternChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="col-md-4 mb-4">
+        <div class="stats-card mb-3">
+            <div class="stats-icon"><i data-feather="smartphone"></i></div>
+            <div class="stats-info">
+                <h3>{{ analysis_results|length }}</h3>
+                <p>Total Analyses</p>
+            </div>
+        </div>
+        <div class="stats-card mb-3">
+            <div class="stats-icon"><i data-feather="map-pin"></i></div>
+            <div class="stats-info">
+                <h3 id="totalLocations">0</h3>
+                <p>Unique Locations</p>
+            </div>
+        </div>
+        <div class="stats-card">
+            <div class="stats-icon"><i data-feather="clock"></i></div>
+            <div class="stats-info">
+                <h3 id="timeRange">0</h3>
+                <p>Hours Analyzed</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Results -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Analysis History</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Analysis Date</th>
+                                <th>Mobile Number</th>
+                                <th>Tower Count</th>
+                                <th>Duration</th>
+                                <th>Pattern Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in analysis_results %}
+                            <tr>
+                                <td>{{ result.analysis_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>{{ result.mobile_number }}</td>
+                                <td>{{ result.tower_count }}</td>
+                                <td>
+                                    {% set duration = (result.last_seen - result.first_seen).total_seconds() // 3600 %}
+                                    {{ duration }} hours
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">Movement Pattern</span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="viewDetails('{{ result.id }}')">
+                                        View Details
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="showOnMap('{{ result.id }}')">
+                                        Show on Map
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Analysis Details Modal -->
+<div class="modal fade" id="analysisModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Analysis Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="analysisDetails"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

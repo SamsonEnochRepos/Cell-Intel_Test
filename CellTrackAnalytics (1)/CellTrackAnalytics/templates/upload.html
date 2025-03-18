@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Upload Section Header -->
+<div class="welcome-section mb-4">
+    <h2>Upload Tower Data</h2>
+    <p class="text-muted">Upload and manage cell tower data files</p>
+</div>
+
+<!-- Upload Card -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card upload-card">
+            <div class="card-body">
+                <div class="upload-area" id="uploadArea">
+                    <i data-feather="upload-cloud"></i>
+                    <h4>Upload New Data</h4>
+                    <p>Drop your CSV or Excel file here, or click to browse</p>
+                    <form id="uploadForm" class="mt-3">
+                        <input type="file" class="form-control" id="towerData" accept=".csv,.xlsx,.xls" required>
+                        <button type="submit" class="btn btn-primary mt-3">Analyze Data</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload History -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Upload History</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Mobile Numbers</th>
+                                <th>Time Range</th>
+                                <th>Tower Count</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in analysis_results %}
+                            <tr>
+                                <td>{{ result.analysis_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>{{ result.mobile_number }}</td>
+                                <td>{{ result.first_seen.strftime('%Y-%m-%d %H:%M') }} to {{ result.last_seen.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ result.tower_count }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="showAnalysis('{{ result.id }}')">
+                                        View Analysis
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="exportData('{{ result.id }}')">
+                                        Export
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Processing data...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
